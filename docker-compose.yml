@@ -1,0 +1,40 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    environment:
+      POSTGRES_USER: your_user
+      POSTGRES_PASSWORD: your_password
+      POSTGRES_DB: your_database
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # backend:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.backend
+  #   container_name: backend
+  #   environment:
+  #     - DATABASE_URL=postgresql://your_user:your_password@postgres:5432/your_database
+  #   depends_on:
+  #     - postgres
+  #   ports:
+  #     - "8080:8080"
+
+  ui:
+    build: .
+    volumes:
+      - .:/usr/local/src
+      - pnpm_cache:/usr/local/src/.pnpm-store
+    container_name: ui
+    command: pnpm run ui
+    ports:
+      - "5173:5173"
+    # depends_on:
+    #   - backend
+
+volumes:
+  postgres_data:
+  pnpm_cache:
